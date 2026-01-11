@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Echo Pulse: Vibrant Worlds</title>
+    <title>Echo Pulse: Origins</title>
     <style>
         :root {
             --bg-color: #050508;
@@ -147,21 +147,6 @@
 
         .hidden { display: none !important; }
 
-        /* Settings specific styles */
-        .settings-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 110;
-            pointer-events: auto;
-        }
-        
         .lang-group {
             display: flex;
             gap: 10px;
@@ -192,14 +177,13 @@
     <div class="ui-layer">
         <div class="hud">
             <div class="hud-item" id="score-display">SCORE: 0</div>
-            <div class="hud-item" id="biome-display">BIOME: FOREST</div>
         </div>
         <div class="coords" id="coords-display">X: 0, Y: 0</div>
     </div>
 
     <div id="main-menu" class="menu-screen">
         <h1>ECHO PULSE</h1>
-        <p id="menu-desc" style="color: #ccc; margin-bottom: 20px; max-width: 300px;">Исследуйте живые миры. Каждый Seed — это новая палитра.</p>
+        <p id="menu-desc" style="color: #ccc; margin-bottom: 20px; max-width: 300px;">Исследуйте бесконечный мир. Каждый Seed — это новое приключение.</p>
         <input type="text" id="seed-input" class="seed-input" placeholder="Введите SEED мира..." maxlength="16">
         <button id="start-btn" class="btn">Создать мир</button>
         <button id="settings-open-btn" class="btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid white;">Настройки</button>
@@ -224,11 +208,6 @@
 </div>
 
 <script>
-    /**
-     * ECHO PULSE: VIBRANT WORLDS
-     * Бесконечный мир с насыщенными цветами и градиентами.
-     */
-
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
@@ -251,8 +230,7 @@
     let currentLang = localStorage.getItem('echo_lang') || 'ru';
     const TRANSLATIONS = {
         ru: {
-            title: "ECHO PULSE",
-            desc: "Исследуйте живые миры. Каждый Seed — это новая палитра.",
+            desc: "Исследуйте бесконечный мир. Каждый Seed — это новое приключение.",
             placeholder: "Введите SEED мира...",
             start: "Создать мир",
             settings: "Настройки",
@@ -261,12 +239,10 @@
             gameOver: "СИГНАЛ ПОТЕРЯН",
             restart: "Возродиться",
             menu: "Меню",
-            score: "СЧЕТ",
-            biome: "БИОМ"
+            score: "СЧЕТ"
         },
         en: {
-            title: "ECHO PULSE",
-            desc: "Explore vibrant worlds. Every Seed is a new palette.",
+            desc: "Explore the infinite world. Every Seed is a new adventure.",
             placeholder: "Enter world SEED...",
             start: "Create World",
             settings: "Settings",
@@ -275,8 +251,7 @@
             gameOver: "SIGNAL LOST",
             restart: "Respawn",
             menu: "Menu",
-            score: "SCORE",
-            biome: "BIOME"
+            score: "SCORE"
         }
     };
 
@@ -298,81 +273,24 @@
         document.getElementById('game-over-title').innerText = t.gameOver;
         document.getElementById('restart-btn').innerText = t.restart;
         document.getElementById('to-menu-btn').innerText = t.menu;
-        
-        // Update active button state
         document.getElementById('lang-ru').className = `lang-btn ${currentLang === 'ru' ? 'active' : ''}`;
         document.getElementById('lang-en').className = `lang-btn ${currentLang === 'en' ? 'active' : ''}`;
-        
-        // Update HUD labels if playing
         updateHUDLabels();
     }
 
     function updateHUDLabels() {
         const t = TRANSLATIONS[currentLang];
         const scoreEl = document.getElementById('score-display');
-        const biomeEl = document.getElementById('biome-display');
         if (scoreEl) scoreEl.innerText = `${t.score}: ${score}`;
-        // Biome name is usually kept in English or can be translated if needed
     }
 
-    // --- BIOME PALETTES ---
-    const BIOMES = {
-        FOREST: {
-            name: 'FOREST',
-            bg: ['#0a2e2a', '#1a4d44'], // Градиент
-            primary: '#2ecc71',
-            accent: '#1abc9c',
-            particle: '#a3e4d7',
-            grid: 'rgba(46, 204, 113, 0.1)'
-        },
-        DESERT: {
-            name: 'DESERT',
-            bg: ['#4a3311', '#6e4d1a'],
-            primary: '#f1c40f',
-            accent: '#e67e22',
-            particle: '#f9e79f',
-            grid: 'rgba(241, 196, 15, 0.1)'
-        },
-        ICE: {
-            name: 'ICE',
-            bg: ['#1b3a4b', '#2c5d72'],
-            primary: '#ffffff',
-            accent: '#3498db',
-            particle: '#d6eaf8',
-            grid: 'rgba(255, 255, 255, 0.1)'
-        },
-        VOID: {
-            name: 'VOID',
-            bg: ['#1a0a2e', '#2d1a4d'],
-            primary: '#9b59b6',
-            accent: '#7000ff',
-            particle: '#d7bde2',
-            grid: 'rgba(155, 89, 182, 0.1)'
-        },
-        CHAOS: {
-            name: 'CHAOS',
-            bg: ['#3e0a0a', '#5d1a1a'],
-            primary: '#e74c3c',
-            accent: '#ff007a',
-            particle: '#f5b7b1',
-            grid: 'rgba(231, 76, 60, 0.1)'
-        },
-        RESONANCE: {
-            name: 'RESONANCE',
-            bg: ['#0a1a2e', '#1a2d4d'],
-            primary: '#00f2ff',
-            accent: '#7000ff',
-            particle: '#aed6f1',
-            grid: 'rgba(0, 242, 255, 0.1)'
-        },
-        COSMIC: {
-            name: 'COSMIC',
-            bg: ['#05051a', '#0a0a3d'],
-            primary: '#ffffff',
-            accent: '#ff007a',
-            particle: '#fdedec',
-            grid: 'rgba(255, 255, 255, 0.1)'
-        }
+    // --- SINGLE WORLD STYLE ---
+    const WORLD_STYLE = {
+        bg: ['#0a1a2e', '#1a2d4d'],
+        primary: '#00f2ff',
+        accent: '#7000ff',
+        particle: '#aed6f1',
+        grid: 'rgba(0, 242, 255, 0.1)'
     };
 
     // --- UTILS ---
@@ -391,25 +309,15 @@
         return Math.abs(hash);
     }
 
-    function getBiomeAt(cx, cy) {
-        const rnd = mulberry32(cx * 31 + cy * 17 + worldSeed);
-        const v = rnd();
-        const keys = Object.keys(BIOMES);
-        return BIOMES[keys[Math.floor(v * keys.length)]];
-    }
-
     // --- ENGINE ---
     function generateChunk(cx, cy) {
         const key = `${cx},${cy}`;
         if (chunks.has(key)) return chunks.get(key);
 
-        const biome = getBiomeAt(cx, cy);
         const rnd = mulberry32(cx * 1000 + cy + worldSeed);
-        
         const structures = [];
         const enemies = [];
         
-        // Structures
         if (rnd() < 0.4) {
             const count = Math.floor(rnd() * 4) + 1;
             for (let i = 0; i < count; i++) {
@@ -418,12 +326,11 @@
                     y: cy * CHUNK_SIZE + rnd() * CHUNK_SIZE,
                     w: 60 + rnd() * 120,
                     h: 60 + rnd() * 120,
-                    color: biome.accent
+                    color: WORLD_STYLE.accent
                 });
             }
         }
 
-        // Enemies
         const enemyCount = 3 + Math.floor(rnd() * 6);
         for (let i = 0; i < enemyCount; i++) {
             enemies.push({
@@ -432,11 +339,11 @@
                 r: 12 + rnd() * 10,
                 vx: (rnd() - 0.5) * 3,
                 vy: (rnd() - 0.5) * 3,
-                color: biome.primary
+                color: WORLD_STYLE.primary
             });
         }
 
-        const chunk = { biome, structures, enemies };
+        const chunk = { structures, enemies };
         chunks.set(key, chunk);
         return chunk;
     }
@@ -444,13 +351,8 @@
     function initGame() {
         resize();
         worldSeed = getSeedHash(seed);
-        player.x = 0; player.y = 0;
-        player.vx = 0; player.vy = 0;
-        player.trail = [];
-        chunks.clear();
-        pulses = [];
-        particles = [];
-        score = 0;
+        player.x = 0; player.y = 0; player.vx = 0; player.vy = 0; player.trail = [];
+        chunks.clear(); pulses = []; particles = []; score = 0;
         state = 'PLAYING';
         updateHUDLabels();
     }
@@ -477,15 +379,8 @@
     }, { passive: false });
 
     function createPulse(x, y) {
-        const cx = Math.floor(player.x / CHUNK_SIZE);
-        const cy = Math.floor(player.y / CHUNK_SIZE);
-        const biome = getBiomeAt(cx, cy);
-        
-        pulses.push({ x, y, r: 0, maxR: 160, opacity: 1, color: biome.primary });
-        
-        const dx = player.x - x;
-        const dy = player.y - y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
+        pulses.push({ x, y, r: 0, maxR: 160, opacity: 1, color: WORLD_STYLE.primary });
+        const dx = player.x - x, dy = player.y - y, dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < 160) {
             const force = (160 - dist) / 160 * 18;
             player.vx += (dx / dist) * force;
@@ -495,182 +390,104 @@
 
     function update() {
         if (state !== 'PLAYING') return;
-
-        player.x += player.vx;
-        player.y += player.vy;
-        player.vx *= 0.97;
-        player.vy *= 0.97;
-
+        player.x += player.vx; player.y += player.vy;
+        player.vx *= 0.97; player.vy *= 0.97;
         camera.x += (player.x - canvas.clientWidth / 2 - camera.x) * 0.1;
         camera.y += (player.y - canvas.clientHeight / 2 - camera.y) * 0.1;
-
         player.trail.push({x: player.x, y: player.y});
         if (player.trail.length > 25) player.trail.shift();
 
         const currentCX = Math.floor(player.x / CHUNK_SIZE);
         const currentCY = Math.floor(player.y / CHUNK_SIZE);
-        const currentBiome = getBiomeAt(currentCX, currentCY);
 
-        // Update Chunks
         for (let x = currentCX - VIEW_DISTANCE; x <= currentCX + VIEW_DISTANCE; x++) {
             for (let y = currentCY - VIEW_DISTANCE; y <= currentCY + VIEW_DISTANCE; y++) {
                 const chunk = generateChunk(x, y);
-                
                 chunk.enemies.forEach(e => {
                     e.x += e.vx; e.y += e.vy;
                     if (e.x < x * CHUNK_SIZE || e.x > (x+1) * CHUNK_SIZE) e.vx *= -1;
                     if (e.y < y * CHUNK_SIZE || e.y > (y+1) * CHUNK_SIZE) e.vy *= -1;
-                    
-                    const dx = player.x - e.x;
-                    const dy = player.y - e.y;
+                    const dx = player.x - e.x, dy = player.y - e.y;
                     if (Math.sqrt(dx*dx + dy*dy) < player.r + e.r) endGame();
                 });
-
                 chunk.structures.forEach(s => {
                     if (player.x + player.r > s.x && player.x - player.r < s.x + s.w &&
                         player.y + player.r > s.y && player.y - player.r < s.y + s.h) {
-                        player.vx *= -1.1;
-                        player.vy *= -1.1;
-                        score += 1;
-                        createParticles(player.x, player.y, currentBiome.particle, 5);
+                        player.vx *= -1.1; player.vy *= -1.1;
+                        score += 1; createParticles(player.x, player.y, WORLD_STYLE.particle, 5);
                         updateHUDLabels();
                     }
                 });
             }
         }
 
-        // Pulses
         for (let i = pulses.length - 1; i >= 0; i--) {
-            const p = pulses[i];
-            p.r += 6;
-            p.opacity -= 0.025;
-            if (p.opacity <= 0) pulses.splice(i, 1);
+            pulses[i].r += 6; pulses[i].opacity -= 0.025;
+            if (pulses[i].opacity <= 0) pulses.splice(i, 1);
         }
-
-        // Particles
         for (let i = particles.length - 1; i >= 0; i--) {
-            const p = particles[i];
-            p.x += p.vx; p.y += p.vy;
-            p.life -= 0.02;
-            if (p.life <= 0) particles.splice(i, 1);
+            particles[i].x += particles[i].vx; particles[i].y += particles[i].vy;
+            particles[i].life -= 0.02;
+            if (particles[i].life <= 0) particles.splice(i, 1);
         }
-
-        // HUD
         document.getElementById('coords-display').innerText = `X: ${Math.floor(player.x)}, Y: ${Math.floor(player.y)}`;
-        document.getElementById('biome-display').innerText = `${TRANSLATIONS[currentLang].biome}: ${currentBiome.name}`;
     }
 
     function createParticles(x, y, color, count) {
         for (let i = 0; i < count; i++) {
-            particles.push({
-                x, y,
-                vx: (Math.random() - 0.5) * 8,
-                vy: (Math.random() - 0.5) * 8,
-                life: 1,
-                color
-            });
+            particles.push({ x, y, vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8, life: 1, color });
         }
     }
 
     function draw() {
+        const grad = ctx.createRadialGradient(canvas.clientWidth/2, canvas.clientHeight/2, 0, canvas.clientWidth/2, canvas.clientHeight/2, canvas.clientWidth);
+        grad.addColorStop(0, WORLD_STYLE.bg[1]); grad.addColorStop(1, WORLD_STYLE.bg[0]);
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
         const currentCX = Math.floor(player.x / CHUNK_SIZE);
         const currentCY = Math.floor(player.y / CHUNK_SIZE);
-        const currentBiome = getBiomeAt(currentCX, currentCY);
 
-        // Draw Background Gradient
-        const grad = ctx.createRadialGradient(
-            canvas.clientWidth/2, canvas.clientHeight/2, 0,
-            canvas.clientWidth/2, canvas.clientHeight/2, canvas.clientWidth
-        );
-        grad.addColorStop(0, currentBiome.bg[1]);
-        grad.addColorStop(1, currentBiome.bg[0]);
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-
-        // Draw Chunks
         for (let x = currentCX - VIEW_DISTANCE; x <= currentCX + VIEW_DISTANCE; x++) {
             for (let y = currentCY - VIEW_DISTANCE; y <= currentCY + VIEW_DISTANCE; y++) {
                 const chunk = generateChunk(x, y);
                 const screenX = x * CHUNK_SIZE - camera.x;
                 const screenY = y * CHUNK_SIZE - camera.y;
-
-                // Grid
-                ctx.strokeStyle = chunk.biome.grid;
-                ctx.lineWidth = 1;
-                const step = 100;
-                for(let gx=0; gx<=CHUNK_SIZE; gx+=step) {
+                ctx.strokeStyle = WORLD_STYLE.grid; ctx.lineWidth = 1;
+                for(let gx=0; gx<=CHUNK_SIZE; gx+=100) {
                     ctx.beginPath(); ctx.moveTo(screenX + gx, screenY); ctx.lineTo(screenX + gx, screenY + CHUNK_SIZE); ctx.stroke();
                 }
-                for(let gy=0; gy<=CHUNK_SIZE; gy+=step) {
+                for(let gy=0; gy<=CHUNK_SIZE; gy+=100) {
                     ctx.beginPath(); ctx.moveTo(screenX, screenY + gy); ctx.lineTo(screenX + CHUNK_SIZE, screenY + gy); ctx.stroke();
                 }
-
-                // Structures
                 chunk.structures.forEach(s => {
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = s.color;
-                    ctx.fillStyle = s.color;
-                    ctx.globalAlpha = 0.4;
+                    ctx.shadowBlur = 20; ctx.shadowColor = s.color; ctx.fillStyle = s.color; ctx.globalAlpha = 0.4;
                     ctx.fillRect(s.x - camera.x, s.y - camera.y, s.w, s.h);
-                    ctx.globalAlpha = 1;
-                    ctx.strokeStyle = '#fff';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(s.x - camera.x, s.y - camera.y, s.w, s.h);
+                    ctx.globalAlpha = 1; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(s.x - camera.x, s.y - camera.y, s.w, s.h);
                     ctx.shadowBlur = 0;
                 });
-
-                // Enemies
                 chunk.enemies.forEach(e => {
-                    ctx.beginPath();
-                    ctx.arc(e.x - camera.x, e.y - camera.y, e.r, 0, Math.PI*2);
-                    ctx.fillStyle = e.color;
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = e.color;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
+                    ctx.beginPath(); ctx.arc(e.x - camera.x, e.y - camera.y, e.r, 0, Math.PI*2);
+                    ctx.fillStyle = e.color; ctx.shadowBlur = 15; ctx.shadowColor = e.color; ctx.fill(); ctx.shadowBlur = 0;
                 });
             }
         }
 
-        // Pulses
         pulses.forEach(p => {
-            ctx.beginPath();
-            ctx.arc(p.x - camera.x, p.y - camera.y, p.r, 0, Math.PI*2);
-            ctx.strokeStyle = p.color;
-            ctx.globalAlpha = p.opacity;
-            ctx.lineWidth = 4;
-            ctx.stroke();
-            ctx.globalAlpha = 1;
+            ctx.beginPath(); ctx.arc(p.x - camera.x, p.y - camera.y, p.r, 0, Math.PI*2);
+            ctx.strokeStyle = p.color; ctx.globalAlpha = p.opacity; ctx.lineWidth = 4; ctx.stroke(); ctx.globalAlpha = 1;
         });
 
-        // Trail
         if (player.trail.length > 1) {
-            ctx.beginPath();
-            ctx.moveTo(player.trail[0].x - camera.x, player.trail[0].y - camera.y);
+            ctx.beginPath(); ctx.moveTo(player.trail[0].x - camera.x, player.trail[0].y - camera.y);
             player.trail.forEach(t => ctx.lineTo(t.x - camera.x, t.y - camera.y));
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.lineWidth = player.r * 1.5;
-            ctx.lineCap = 'round';
-            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)'; ctx.lineWidth = player.r * 1.5; ctx.lineCap = 'round'; ctx.stroke();
         }
 
-        // Player
-        ctx.beginPath();
-        ctx.arc(player.x - camera.x, player.y - camera.y, player.r, 0, Math.PI*2);
-        ctx.fillStyle = '#fff';
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#fff';
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(player.x - camera.x, player.y - camera.y, player.r, 0, Math.PI*2);
+        ctx.fillStyle = '#fff'; ctx.shadowBlur = 20; ctx.shadowColor = '#fff'; ctx.fill(); ctx.shadowBlur = 0;
 
-        // Particles
-        particles.forEach(p => {
-            ctx.globalAlpha = p.life;
-            ctx.fillStyle = p.color;
-            ctx.fillRect(p.x - camera.x, p.y - camera.y, 4, 4);
-        });
+        particles.forEach(p => { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.fillRect(p.x - camera.x, p.y - camera.y, 4, 4); });
         ctx.globalAlpha = 1;
-
         requestAnimationFrame(draw);
     }
 
@@ -683,37 +500,17 @@
     setInterval(update, 1000/60);
     draw();
 
-    // UI Event Listeners
     document.getElementById('start-btn').onclick = () => {
         seed = document.getElementById('seed-input').value || "MANUS";
         initGame();
         document.getElementById('main-menu').classList.add('hidden');
     };
+    document.getElementById('restart-btn').onclick = () => { initGame(); document.getElementById('game-over').classList.add('hidden'); };
+    document.getElementById('to-menu-btn').onclick = () => { state = 'MENU'; document.getElementById('game-over').classList.add('hidden'); document.getElementById('main-menu').classList.remove('hidden'); };
+    document.getElementById('settings-open-btn').onclick = () => { document.getElementById('main-menu').classList.add('hidden'); document.getElementById('settings-menu').classList.remove('hidden'); };
+    document.getElementById('settings-close-btn').onclick = () => { document.getElementById('settings-menu').classList.add('hidden'); document.getElementById('main-menu').classList.remove('hidden'); };
 
-    document.getElementById('restart-btn').onclick = () => {
-        initGame();
-        document.getElementById('game-over').classList.add('hidden');
-    };
-
-    document.getElementById('to-menu-btn').onclick = () => {
-        state = 'MENU';
-        document.getElementById('game-over').classList.add('hidden');
-        document.getElementById('main-menu').classList.remove('hidden');
-    };
-
-    document.getElementById('settings-open-btn').onclick = () => {
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById('settings-menu').classList.remove('hidden');
-    };
-
-    document.getElementById('settings-close-btn').onclick = () => {
-        document.getElementById('settings-menu').classList.add('hidden');
-        document.getElementById('main-menu').classList.remove('hidden');
-    };
-
-    // Initial UI update
     updateUI();
-
 </script>
 </body>
 </html>
