@@ -146,6 +146,42 @@
         }
 
         .hidden { display: none !important; }
+
+        /* Settings specific styles */
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 110;
+            pointer-events: auto;
+        }
+        
+        .lang-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .lang-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .lang-btn.active {
+            background: var(--primary-color);
+            color: black;
+            border-color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -162,16 +198,28 @@
     </div>
 
     <div id="main-menu" class="menu-screen">
-        <h1>ECHO VIBRANT</h1>
-        <p style="color: #ccc; margin-bottom: 20px; max-width: 300px;">Исследуйте живые миры. Каждый Seed — это новая палитра.</p>
+        <h1>ECHO PULSE</h1>
+        <p id="menu-desc" style="color: #ccc; margin-bottom: 20px; max-width: 300px;">Исследуйте живые миры. Каждый Seed — это новая палитра.</p>
         <input type="text" id="seed-input" class="seed-input" placeholder="Введите SEED мира..." maxlength="16">
         <button id="start-btn" class="btn">Создать мир</button>
+        <button id="settings-open-btn" class="btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid white;">Настройки</button>
+    </div>
+
+    <div id="settings-menu" class="menu-screen hidden">
+        <h2 id="settings-title" style="color: white; margin-bottom: 20px;">НАСТРОЙКИ</h2>
+        <p id="lang-label" style="color: #ccc;">ЯЗЫК / LANGUAGE</p>
+        <div class="lang-group">
+            <button onclick="setLanguage('ru')" id="lang-ru" class="lang-btn">Русский</button>
+            <button onclick="setLanguage('en')" id="lang-en" class="lang-btn">English</button>
+        </div>
+        <button id="settings-close-btn" class="btn">Назад</button>
     </div>
 
     <div id="game-over" class="menu-screen hidden">
-        <h2 style="color: #ff007a; font-size: 2.5rem;">СИГНАЛ ПОТЕРЯН</h2>
+        <h2 id="game-over-title" style="color: #ff007a; font-size: 2.5rem;">СИГНАЛ ПОТЕРЯН</h2>
         <p id="final-score" style="margin: 20px 0; color: white;"></p>
         <button id="restart-btn" class="btn">Возродиться</button>
+        <button id="to-menu-btn" class="btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid white;">Меню</button>
     </div>
 </div>
 
@@ -198,6 +246,74 @@
     let chunks = new Map();
     let pulses = [];
     let particles = [];
+
+    // --- LOCALIZATION ---
+    let currentLang = localStorage.getItem('echo_lang') || 'ru';
+    const TRANSLATIONS = {
+        ru: {
+            title: "ECHO PULSE",
+            desc: "Исследуйте живые миры. Каждый Seed — это новая палитра.",
+            placeholder: "Введите SEED мира...",
+            start: "Создать мир",
+            settings: "Настройки",
+            langLabel: "ЯЗЫК",
+            back: "Назад",
+            gameOver: "СИГНАЛ ПОТЕРЯН",
+            restart: "Возродиться",
+            menu: "Меню",
+            score: "СЧЕТ",
+            biome: "БИОМ"
+        },
+        en: {
+            title: "ECHO PULSE",
+            desc: "Explore vibrant worlds. Every Seed is a new palette.",
+            placeholder: "Enter world SEED...",
+            start: "Create World",
+            settings: "Settings",
+            langLabel: "LANGUAGE",
+            back: "Back",
+            gameOver: "SIGNAL LOST",
+            restart: "Respawn",
+            menu: "Menu",
+            score: "SCORE",
+            biome: "BIOME"
+        }
+    };
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('echo_lang', lang);
+        updateUI();
+    }
+
+    function updateUI() {
+        const t = TRANSLATIONS[currentLang];
+        document.getElementById('menu-desc').innerText = t.desc;
+        document.getElementById('seed-input').placeholder = t.placeholder;
+        document.getElementById('start-btn').innerText = t.start;
+        document.getElementById('settings-open-btn').innerText = t.settings;
+        document.getElementById('settings-title').innerText = t.settings;
+        document.getElementById('lang-label').innerText = t.langLabel;
+        document.getElementById('settings-close-btn').innerText = t.back;
+        document.getElementById('game-over-title').innerText = t.gameOver;
+        document.getElementById('restart-btn').innerText = t.restart;
+        document.getElementById('to-menu-btn').innerText = t.menu;
+        
+        // Update active button state
+        document.getElementById('lang-ru').className = `lang-btn ${currentLang === 'ru' ? 'active' : ''}`;
+        document.getElementById('lang-en').className = `lang-btn ${currentLang === 'en' ? 'active' : ''}`;
+        
+        // Update HUD labels if playing
+        updateHUDLabels();
+    }
+
+    function updateHUDLabels() {
+        const t = TRANSLATIONS[currentLang];
+        const scoreEl = document.getElementById('score-display');
+        const biomeEl = document.getElementById('biome-display');
+        if (scoreEl) scoreEl.innerText = `${t.score}: ${score}`;
+        // Biome name is usually kept in English or can be translated if needed
+    }
 
     // --- BIOME PALETTES ---
     const BIOMES = {
@@ -336,6 +452,7 @@
         particles = [];
         score = 0;
         state = 'PLAYING';
+        updateHUDLabels();
     }
 
     function resize() {
@@ -416,6 +533,7 @@
                         player.vy *= -1.1;
                         score += 1;
                         createParticles(player.x, player.y, currentBiome.particle, 5);
+                        updateHUDLabels();
                     }
                 });
             }
@@ -438,9 +556,8 @@
         }
 
         // HUD
-        document.getElementById('score-display').innerText = `SCORE: ${score}`;
         document.getElementById('coords-display').innerText = `X: ${Math.floor(player.x)}, Y: ${Math.floor(player.y)}`;
-        document.getElementById('biome-display').innerText = `BIOME: ${currentBiome.name}`;
+        document.getElementById('biome-display').innerText = `${TRANSLATIONS[currentLang].biome}: ${currentBiome.name}`;
     }
 
     function createParticles(x, y, color, count) {
@@ -560,12 +677,13 @@
     function endGame() {
         state = 'GAMEOVER';
         document.getElementById('game-over').classList.remove('hidden');
-        document.getElementById('final-score').innerText = `Ваш счет: ${score}`;
+        document.getElementById('final-score').innerText = `${TRANSLATIONS[currentLang].score}: ${score}`;
     }
 
     setInterval(update, 1000/60);
     draw();
 
+    // UI Event Listeners
     document.getElementById('start-btn').onclick = () => {
         seed = document.getElementById('seed-input').value || "MANUS";
         initGame();
@@ -576,6 +694,25 @@
         initGame();
         document.getElementById('game-over').classList.add('hidden');
     };
+
+    document.getElementById('to-menu-btn').onclick = () => {
+        state = 'MENU';
+        document.getElementById('game-over').classList.add('hidden');
+        document.getElementById('main-menu').classList.remove('hidden');
+    };
+
+    document.getElementById('settings-open-btn').onclick = () => {
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById('settings-menu').classList.remove('hidden');
+    };
+
+    document.getElementById('settings-close-btn').onclick = () => {
+        document.getElementById('settings-menu').classList.add('hidden');
+        document.getElementById('main-menu').classList.remove('hidden');
+    };
+
+    // Initial UI update
+    updateUI();
 
 </script>
 </body>
